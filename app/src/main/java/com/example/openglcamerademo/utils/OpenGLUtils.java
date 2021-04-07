@@ -28,6 +28,13 @@ public class OpenGLUtils {
             1.0f, 1.0f
     };
 
+    public static final float[] TEXTURE_NO_ROTATION = {
+            0.0f, 1.0f,
+            1.0f, 1.0f,
+            0.0f, 0.0f,
+            1.0f, 0.0f
+    };
+
 
     public static String readRawTextFile(Context context, int rawId) {
         InputStream is = context.getResources().openRawResource(rawId);

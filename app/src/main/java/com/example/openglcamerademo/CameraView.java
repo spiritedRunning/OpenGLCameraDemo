@@ -9,7 +9,7 @@ public class CameraView extends GLSurfaceView {
     private CameraRender renderer;
 
     public CameraView(Context context) {
-        super(context);
+        super(context, null);
     }
 
     public CameraView(Context context, AttributeSet attrs) {
