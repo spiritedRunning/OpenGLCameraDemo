@@ -2,6 +2,7 @@ package com.example.openglcamerademo;
 
 import android.content.Context;
 import android.graphics.SurfaceTexture;
+import android.opengl.EGL14;
 import android.opengl.GLSurfaceView;
 
 import androidx.camera.core.Preview;
@@ -9,7 +10,7 @@ import androidx.lifecycle.LifecycleOwner;
 
 import com.example.openglcamerademo.filter.CameraFilter;
 import com.example.openglcamerademo.filter.ScreenFilter;
-import com.example.openglcamerademo.utils.CameraHelper;
+import com.example.openglcamerademo.record.MediaRecorder;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -17,7 +18,6 @@ import javax.microedition.khronos.opengles.GL10;
 public class CameraRender implements GLSurfaceView.Renderer, Preview.OnPreviewOutputUpdateListener, SurfaceTexture.OnFrameAvailableListener {
 
     private CameraView cameraView;
-    private CameraHelper cameraHelper;
 
     private int[] textures;
     private ScreenFilter screenFilter;
@@ -28,10 +28,11 @@ public class CameraRender implements GLSurfaceView.Renderer, Preview.OnPreviewOu
 
     float[] matrix = new float[16];
 
+    private MediaRecorder mRecorder;
+
     public CameraRender(CameraView cameraView) {
         this.cameraView = cameraView;
         LifecycleOwner lifecycleOwner = (LifecycleOwner) cameraView.getContext();
-        cameraHelper = new CameraHelper(lifecycleOwner, this);
     }
 
     @Override
@@ -49,6 +50,8 @@ public class CameraRender implements GLSurfaceView.Renderer, Preview.OnPreviewOu
         Context context = cameraView.getContext();
         cameraFilter = new CameraFilter(context);
         screenFilter = new ScreenFilter(context);
+
+        mRecorder = new MediaRecorder(cameraView.getContext(), "/sdcard/opengl.mp4", EGL14.eglGetCurrentContext(), 480, 640);
     }
 
 
