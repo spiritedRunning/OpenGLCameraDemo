@@ -1,4 +1,4 @@
-package com.example.openglcamerademo;
+package com.example.openglcamerademo.ui;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
@@ -7,6 +7,11 @@ import android.view.SurfaceHolder;
 
 public class CameraView extends GLSurfaceView {
     private CameraRender renderer;
+    private Speed mSpeed = Speed.MODE_NORMAL;
+
+    public enum Speed {
+        MODE_EXTRA_SLOW, MODE_SLOW, MODE_NORMAL, MODE_FAST, MODE_EXTRA_FAST
+    }
 
     public CameraView(Context context) {
         super(context, null);
@@ -33,5 +38,36 @@ public class CameraView extends GLSurfaceView {
     public void surfaceDestroyed(SurfaceHolder holder) {
         super.surfaceDestroyed(holder);
         renderer.onSurfaceDestroyed();
+    }
+
+    public void setSpeed(Speed speed) {
+        this.mSpeed = speed;
+    }
+
+    public void startRecord(){
+        //速度  时间/速度 speed小于就是放慢 大于1就是加快
+        float speed = 1.f;
+        switch (mSpeed) {
+            case MODE_EXTRA_SLOW:
+                speed = 0.3f;
+                break;
+            case MODE_SLOW:
+                speed = 0.5f;
+                break;
+            case MODE_NORMAL:
+                speed = 1.f;
+                break;
+            case MODE_FAST:
+                speed = 2.f;
+                break;
+            case MODE_EXTRA_FAST:
+                speed = 3.f;
+                break;
+        }
+        renderer.startRecord(speed);
+    }
+
+    public void stopRecord(){
+        renderer.stopRecord();
     }
 }
