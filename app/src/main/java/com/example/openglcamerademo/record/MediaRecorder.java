@@ -8,12 +8,14 @@ import android.media.MediaMuxer;
 import android.opengl.EGLContext;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Log;
 import android.view.Surface;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
 public class MediaRecorder {
+    private static final String TAG = "MediaRecorder";
     private final int mWidth, mHeight;
     private final String mPath;
     private final Context mContext;
@@ -83,12 +85,14 @@ public class MediaRecorder {
             mMediaCodec.signalEndOfInputStream();
         }
 
+        Log.e(TAG, "codec...");
         while (true) {
             MediaCodec.BufferInfo bufferInfo = new MediaCodec.BufferInfo();
             int encoderStatus = mMediaCodec.dequeueOutputBuffer(bufferInfo, 10_000);
 
             if (encoderStatus == MediaCodec.INFO_TRY_AGAIN_LATER) {  // 需要更多数据
-                if (endOfStream) {  // todo 这里有疑问
+                Log.e(TAG, "INFO_TRY_AGAIN_LATER endOfStream = " + endOfStream);
+                if (!endOfStream) {  // todo very important!!
                     break;
                 }
             } else if (encoderStatus == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) { // 输出格式发生改变， 总会调用一次
@@ -114,12 +118,15 @@ public class MediaRecorder {
                     encodeData.position(bufferInfo.offset);  // 读出编码后的数据
                     encodeData.limit(bufferInfo.offset + bufferInfo.size);   // 设置能读数据的总长度
                     mMuxer.writeSampleData(track, encodeData, bufferInfo);  // 写出到mp4
+
+                    Log.e(TAG, "write sample to data");
                 }
 
                 // 释放这个缓冲区，后续可以存放新的编码后数据
                 mMediaCodec.releaseOutputBuffer(encoderStatus, false);
 
                 if ((bufferInfo.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) { // 收到结束信号
+                    Log.e(TAG, "BUFFER_FLAG_END_OF_STREAM endOfStream = " + endOfStream);
                     break;
                 }
             }
@@ -129,22 +136,27 @@ public class MediaRecorder {
     public void stop() {
         isStart = false;
 
-        mHandler.post(() -> {
-            codec(true);
-            mMediaCodec.stop();
-            mMediaCodec.release();
-            mMediaCodec = null;
+        Log.e(TAG, "stop and clear");
+        try {
+            mHandler.post(() -> {
+                codec(true);
+                mMediaCodec.stop();
+                mMediaCodec.release();
+                mMediaCodec = null;
 
-            mMuxer.stop();
-            mMuxer.release();
-            mMuxer = null;
+                mMuxer.stop();
+                mMuxer.release();
+                mMuxer = null;
 
-            eglEnv.release();
-            eglEnv = null;
+                eglEnv.release();
+                eglEnv = null;
 
-            mSurface = null;
-            mHandler.getLooper().quitSafely();
-            mHandler = null;
-        });
+                mSurface = null;
+                mHandler.getLooper().quitSafely();
+                mHandler = null;
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

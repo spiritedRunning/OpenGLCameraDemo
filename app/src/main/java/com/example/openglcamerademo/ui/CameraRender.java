@@ -107,6 +107,7 @@ public class CameraRender implements GLSurfaceView.Renderer, Preview.OnPreviewOu
     public void startRecord(float speed) {
         try {
             mRecorder.start(speed);
+            Log.e(TAG, "startRecord");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -114,6 +115,7 @@ public class CameraRender implements GLSurfaceView.Renderer, Preview.OnPreviewOu
 
     public void stopRecord() {
         mRecorder.stop();
+        Log.e(TAG, "stopRecord");
     }
 
 
