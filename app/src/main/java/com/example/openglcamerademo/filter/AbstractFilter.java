@@ -50,15 +50,11 @@ public class AbstractFilter {
         vTexture = GLES20.glGetUniformLocation(program, "vTexture");
     }
 
-    public void setSize(int width, int height) {
-        mWidth = width;
-        mHeight = height;
-    }
 
-
-    public int onDraw(int texture) {
+    public int onDraw(int texture, FilterChain filterChain) {
+        FilterContext filterContext = filterChain.getFilterContext();
         // 设置绘制区域
-        GLES20.glViewport(0, 0, mWidth, mHeight);
+        GLES20.glViewport(0, 0, filterContext.width, filterContext.height);
 
         GLES20.glUseProgram(program);
         vertexBuffer.position(0);

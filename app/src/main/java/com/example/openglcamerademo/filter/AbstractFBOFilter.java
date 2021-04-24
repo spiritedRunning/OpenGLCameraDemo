@@ -5,6 +5,8 @@ import android.opengl.GLES20;
 
 import com.example.openglcamerademo.utils.OpenGLUtils;
 
+import java.nio.channels.FileChannel;
+
 public class AbstractFBOFilter extends AbstractFilter {
     private int[] frameBuffer;
     private int[] frameTextures;
@@ -13,9 +15,7 @@ public class AbstractFBOFilter extends AbstractFilter {
         super(context, vertexShaderId, fragmentShaderId);
     }
 
-    @Override
-    public void setSize(int width, int height) {
-        super.setSize(width, height);
+    public void createFrame(int width, int height) {
         releaseFrame();
 
         /**
@@ -43,11 +43,16 @@ public class AbstractFBOFilter extends AbstractFilter {
     }
 
     @Override
-    public int onDraw(int texture) {
+    public int onDraw(int texture, FilterChain filterChain) {
+        FilterContext filterContext = filterChain.getFilterContext();
+        createFrame(filterContext.width, filterContext.height);
+
+
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer[0]);
-        super.onDraw(texture);
+        super.onDraw(texture, filterChain);
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
-        return frameTextures[0];
+
+        return filterChain.proceed(frameTextures[0]);
     }
 
     private void releaseFrame() {

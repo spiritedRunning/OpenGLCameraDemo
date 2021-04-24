@@ -5,18 +5,23 @@ import android.graphics.SurfaceTexture;
 import android.opengl.EGL14;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.camera.core.Preview;
 import androidx.lifecycle.LifecycleOwner;
 
+import com.example.openglcamerademo.filter.AbstractFilter;
+import com.example.openglcamerademo.filter.BigEyeFilter;
 import com.example.openglcamerademo.filter.CameraFilter;
+import com.example.openglcamerademo.filter.FilterChain;
+import com.example.openglcamerademo.filter.FilterContext;
 import com.example.openglcamerademo.filter.ScreenFilter;
 import com.example.openglcamerademo.record.MediaRecorder;
 import com.example.openglcamerademo.utils.CameraHelper;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -35,6 +40,7 @@ public class CameraRender implements GLSurfaceView.Renderer, Preview.OnPreviewOu
     private SurfaceTexture mCameraTexture;
 
     float[] matrix = new float[16];
+    private FilterChain filterChain;
 
     private MediaRecorder mRecorder;
 
@@ -60,6 +66,13 @@ public class CameraRender implements GLSurfaceView.Renderer, Preview.OnPreviewOu
         cameraFilter = new CameraFilter(context);
         screenFilter = new ScreenFilter(context);
 
+
+        List<AbstractFilter> filters = new ArrayList<>();
+        filters.add(new CameraFilter(context));
+        filters.add(new BigEyeFilter(context));
+        filters.add(new ScreenFilter(context));
+        filterChain = new FilterChain(filters, 0, new FilterContext());
+
         File file = new File("/sdcard/opengl.mp4");
         if (!file.exists()) {
             try {
@@ -77,13 +90,11 @@ public class CameraRender implements GLSurfaceView.Renderer, Preview.OnPreviewOu
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        cameraFilter.setSize(width, height);
-        screenFilter.setSize(width, height);
+        filterChain.setSize(width, height);
     }
 
     public void onSurfaceDestroyed() {
-        cameraFilter.release();
-        screenFilter.release();
+        filterChain.release();
     }
 
 
@@ -92,9 +103,9 @@ public class CameraRender implements GLSurfaceView.Renderer, Preview.OnPreviewOu
         mCameraTexture.updateTexImage();
         mCameraTexture.getTransformMatrix(matrix);
 
-        cameraFilter.setTransformMatrix(matrix);
-        int id = cameraFilter.onDraw(textures[0]);
-        screenFilter.onDraw(id);
+        filterChain.setTransformMatrix(matrix);
+        filterChain.setFace(cameraHelper.getFace());
+        int id = filterChain.proceed(textures[0]);
 
         mRecorder.fireFrame(id, mCameraTexture.getTimestamp());
     }
