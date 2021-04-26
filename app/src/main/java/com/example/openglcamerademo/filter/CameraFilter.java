@@ -24,12 +24,16 @@ public class CameraFilter extends AbstractFBOFilter  {
     }
 
     @Override
+    public int onDraw(int texture, FilterChain filterChain) {
+        matrix = filterChain.getFilterContext().cameraMatrix;
+        return super.onDraw(texture, filterChain);
+    }
+
+    @Override
     public void beforeDraw() {
         super.beforeDraw();
         GLES20.glUniformMatrix4fv(vMatrix, 1, false, matrix, 0);
     }
 
-    public void setTransformMatrix(float[] matrix) {
-        this.matrix = matrix;
-    }
+
 }
