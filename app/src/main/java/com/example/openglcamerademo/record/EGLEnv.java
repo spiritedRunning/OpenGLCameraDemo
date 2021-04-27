@@ -9,13 +9,19 @@ import android.opengl.EGLExt;
 import android.opengl.EGLSurface;
 import android.view.Surface;
 
+import com.example.openglcamerademo.filter.FilterChain;
+import com.example.openglcamerademo.filter.FilterContext;
 import com.example.openglcamerademo.filter.RecordFilter;
+
+import java.util.ArrayList;
 
 public class EGLEnv {
     private final EGLConfig mEglConfig;
     private final EGLContext mEglContext;
     private final EGLSurface mEglSurface;
     private EGLDisplay mEglDisplay;
+
+    private final FilterChain filterChain;
 
     private final RecordFilter recordFilter;
 
@@ -78,11 +84,13 @@ public class EGLEnv {
         }
 
         recordFilter = new RecordFilter(context);
-        recordFilter.setSize(width, height);
+        FilterContext filterContext = new FilterContext();
+        filterContext.setSize(width, height);
+        filterChain = new FilterChain(new ArrayList<>(), 0,filterContext);
     }
 
     public void draw(int textureId, long timeStamp) {
-        recordFilter.onDraw(textureId);
+        recordFilter.onDraw(textureId, filterChain);
         EGLExt.eglPresentationTimeANDROID(mEglDisplay, mEglSurface, timeStamp);
 
         // EGLSurface是双缓冲模式
