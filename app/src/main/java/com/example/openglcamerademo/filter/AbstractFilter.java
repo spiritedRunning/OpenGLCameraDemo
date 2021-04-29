@@ -11,16 +11,14 @@ import java.nio.FloatBuffer;
 
 public class AbstractFilter {
 
-    private int vPosition;
-    private int vCoord;
-    private int vTexture;
+    protected int vPosition;
+    protected int vCoord;
+    protected int vTexture;
 
     protected int program;
-    private FloatBuffer vertexBuffer;  // 顶点坐标缓冲区
-    private FloatBuffer textureBuffer;  // 纹理坐标
+    protected FloatBuffer vertexBuffer;  // 顶点坐标缓冲区
+    protected FloatBuffer textureBuffer;  // 纹理坐标
 
-    private int mWidth;
-    private int mHeight;
 
     public AbstractFilter(Context context, int vertexShaderId, int fragmentShaderId) {
         // 4个坐标 * float * x,y 轴坐标
@@ -78,6 +76,8 @@ public class AbstractFilter {
         // 通知画画
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
 
+        afterDraw(filterChain.getFilterContext());
+
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
 
         return texture;
@@ -86,8 +86,14 @@ public class AbstractFilter {
     public void beforeDraw() {
     }
 
+    public void afterDraw(FilterContext filterContext) {
+
+    }
+
 
     public void release() {
-        GLES20.glDeleteProgram(program);
+        if (program != -1) {
+            GLES20.glDeleteProgram(program);
+        }
     }
 }

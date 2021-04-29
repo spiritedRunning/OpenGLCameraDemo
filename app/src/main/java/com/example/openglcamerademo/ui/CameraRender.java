@@ -15,6 +15,7 @@ import com.example.openglcamerademo.filter.CameraFilter;
 import com.example.openglcamerademo.filter.FilterChain;
 import com.example.openglcamerademo.filter.FilterContext;
 import com.example.openglcamerademo.filter.ScreenFilter;
+import com.example.openglcamerademo.filter.StickFilter;
 import com.example.openglcamerademo.record.MediaRecorder;
 import com.example.openglcamerademo.utils.CameraHelper;
 
@@ -70,6 +71,7 @@ public class CameraRender implements GLSurfaceView.Renderer, Preview.OnPreviewOu
         List<AbstractFilter> filters = new ArrayList<>();
         filters.add(new CameraFilter(context));
         filters.add(new BigEyeFilter(context));
+        filters.add(new StickFilter(context));
         filters.add(new ScreenFilter(context));
         filterChain = new FilterChain(filters, 0, new FilterContext());
 

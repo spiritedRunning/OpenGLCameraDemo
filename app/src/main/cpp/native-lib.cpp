@@ -96,10 +96,15 @@ Java_com_example_openglcamerademo_face_FaceTracker_nativeDetect(JNIEnv *env, jcl
 
     if (!face.empty() && !points.empty()) {
         jclass cls = env->FindClass("com/example/openglcamerademo/face/Face");
-        jmethodID construct = env->GetMethodID(cls, "<init>", "(IIIIIIFFFF)V");
+        jmethodID construct = env->GetMethodID(cls, "<init>", "(IIIIIIFFFFFFFFFF)V");
         SeetaPointF left = points[0];
         SeetaPointF right = points[1];
-        jobject obj = env->NewObject(cls, construct, face.width, face.height, w, h, face.x, face.y, left.x, left.y, right.x, right.y);
+        SeetaPointF nose = points[2];
+        SeetaPointF mouse_left = points[3];
+        SeetaPointF mouse_right = points[4];
+
+        jobject obj = env->NewObject(cls, construct, face.width, face.height, w, h, face.x, face.y, left.x, left.y,
+                right.x, right.y, nose.x, nose.y, mouse_left.x, mouse_left.y, mouse_right.x, mouse_right.y);
         return obj;
     }
 
