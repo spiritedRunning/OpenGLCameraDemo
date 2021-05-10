@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import android.Manifest;
 import android.os.Bundle;
 import android.widget.RadioGroup;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.example.openglcamerademo.ui.CameraView;
@@ -29,6 +30,27 @@ public class MainActivity extends AppCompatActivity implements RecordButton.OnRe
         cameraView = findViewById(R.id.cameraView);
         RecordButton btn_record = findViewById(R.id.btn_record);
         btn_record.setOnRecordListener(this);
+
+        SeekBar sb = findViewById(R.id.seek_bar);
+        sb.setMax(100);
+        sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    cameraView.setBeauty(progress * 1.0f / seekBar.getMax());
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     @Override

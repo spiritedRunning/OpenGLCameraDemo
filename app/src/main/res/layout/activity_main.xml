@@ -75,6 +75,14 @@
             android:textColor="@drawable/record_speed_button_text" />
     </RadioGroup>
 
+    <SeekBar
+        android:id="@+id/seek_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/rg_speed"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="20dp"/>
+
     <com.example.openglcamerademo.ui.RecordButton
         android:id="@+id/btn_record"
         android:layout_width="80dp"

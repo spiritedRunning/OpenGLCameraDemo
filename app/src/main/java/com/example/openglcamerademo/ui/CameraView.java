@@ -40,6 +40,10 @@ public class CameraView extends GLSurfaceView {
         renderer.onSurfaceDestroyed();
     }
 
+    public void setBeauty(float level) {
+        renderer.setBeautyLevel(level);
+    }
+
     public void setSpeed(Speed speed) {
         this.mSpeed = speed;
     }

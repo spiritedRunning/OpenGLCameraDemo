@@ -40,8 +40,8 @@ public class BigEyeFilter extends AbstractFBOFilter {
     }
 
     @Override
-    public void beforeDraw() {
-        super.beforeDraw();
+    public void beforeDraw(FilterContext filterContext) {
+        super.beforeDraw(filterContext);
 
         if (face == null) {
             return;

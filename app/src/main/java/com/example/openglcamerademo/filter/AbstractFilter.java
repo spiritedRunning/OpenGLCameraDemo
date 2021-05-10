@@ -21,12 +21,14 @@ public class AbstractFilter {
 
 
     public AbstractFilter(Context context, int vertexShaderId, int fragmentShaderId) {
-        // 4个坐标 * float * x,y 轴坐标
-        vertexBuffer = ByteBuffer.allocateDirect(4 * 4 * 2).order(ByteOrder.nativeOrder()).asFloatBuffer();
-        textureBuffer = ByteBuffer.allocateDirect(4 * 4 * 2).order(ByteOrder.nativeOrder()).asFloatBuffer();
+        if (vertexShaderId != -1 && fragmentShaderId != -1) {
+            // 4个坐标 * float * x,y 轴坐标
+            vertexBuffer = ByteBuffer.allocateDirect(4 * 4 * 2).order(ByteOrder.nativeOrder()).asFloatBuffer();
+            textureBuffer = ByteBuffer.allocateDirect(4 * 4 * 2).order(ByteOrder.nativeOrder()).asFloatBuffer();
 
-        initCoord();
-        initGL(context, vertexShaderId, fragmentShaderId);
+            initCoord();
+            initGL(context, vertexShaderId, fragmentShaderId);
+        }
 
     }
 
@@ -71,7 +73,7 @@ public class AbstractFilter {
         // 0: 图层ID, 对应上面的GL_TEXTURE0
         GLES20.glUniform1i(vTexture, 0);
 
-        beforeDraw();
+        beforeDraw(filterContext);
 
         // 通知画画
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
@@ -83,7 +85,7 @@ public class AbstractFilter {
         return texture;
     }
 
-    public void beforeDraw() {
+    public void beforeDraw(FilterContext filterContext) {
     }
 
     public void afterDraw(FilterContext filterContext) {
