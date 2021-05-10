@@ -30,6 +30,10 @@ public class StickFilter extends AbstractFBOFilter {
 
     @Override
     public int onDraw(int texture, FilterChain filterChain) {
+        textureBuffer.clear();
+        textureBuffer.put(OpenGLUtils.TEXTURE);
+        textureBuffer.position(0);
+
         return super.onDraw(texture, filterChain);
     }
 
@@ -53,11 +57,11 @@ public class StickFilter extends AbstractFBOFilter {
         // 通过鼻子左右嘴角x的差作为贴纸的宽
         float mouseR = face.mouseRight_x / face.imgWidth * filterContext.width;
         float mouseL = face.mouseLeft_x / face.imgWidth * filterContext.width;
-        int width = (int) (mouseR - mouseL);
+        int width = (int) ((mouseR - mouseL) * 0.75f);
 
         // 以嘴角Y与鼻子中心点的Y差值作为贴纸的高
         float mouseY = (1.0f - face.mouseLeft_y / face.imgHeight) * filterContext.height;
-        int height = (int) (y - mouseY);
+        int height = (int) ((y - mouseY) * 0.75f);
 
         // 重置绘图区域
         GLES20.glViewport((int) x - width / 2, (int) y - height / 2, width, height);
@@ -67,6 +71,10 @@ public class StickFilter extends AbstractFBOFilter {
         vertexBuffer.position(0);
         GLES20.glVertexAttribPointer(vPosition, 2, GLES20.GL_FLOAT, false, 0, vertexBuffer);
         GLES20.glEnableVertexAttribArray(vPosition);
+
+        // 修改贴纸方向
+        textureBuffer.clear();
+        textureBuffer.put(OpenGLUtils.TEXTURE_180);
 
         textureBuffer.position(0);
         GLES20.glVertexAttribPointer(vCoord, 2, GLES20.GL_FLOAT, false, 0, textureBuffer);

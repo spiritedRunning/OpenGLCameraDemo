@@ -28,7 +28,7 @@ public class OpenGLUtils {
             1.0f, 1.0f
     };
 
-    public static final float[] TEXTURE_NO_ROTATION = {
+    public static final float[] TEXTURE_180 = {
             0.0f, 1.0f,
             1.0f, 1.0f,
             0.0f, 0.0f,
