@@ -16,6 +16,7 @@ import com.example.openglcamerademo.filter.FilterChain;
 import com.example.openglcamerademo.filter.FilterContext;
 import com.example.openglcamerademo.filter.ScreenFilter;
 import com.example.openglcamerademo.filter.SoulFilter;
+import com.example.openglcamerademo.filter.SplitFilter;
 import com.example.openglcamerademo.filter.StickFilter;
 import com.example.openglcamerademo.filter.beauty.BeautyFilter;
 import com.example.openglcamerademo.filter.beauty.BeautyFilter2;
@@ -78,7 +79,8 @@ public class CameraRender implements GLSurfaceView.Renderer, Preview.OnPreviewOu
 
 //        filters.add(new BeautyFilter(context));
         filters.add(new BeautyFilter2(context));
-        filters.add(new SoulFilter(context));
+//        filters.add(new SoulFilter(context));
+        filters.add(new SplitFilter(context));
 
         filters.add(new ScreenFilter(context));
         filterChain = new FilterChain(filters, 0, new FilterContext());
